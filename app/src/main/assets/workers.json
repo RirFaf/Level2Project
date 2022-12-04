@@ -1,0 +1,28 @@
+{
+  "workers": [
+    {
+      "id": 1,
+      "image": 1,
+      "title": "Android",
+      "detail": "Sample data"
+    },
+    {
+      "id": 2,
+      "image": 3,
+      "title": "Blue dog",
+      "detail": "Sample data"
+    },
+    {
+      "id": 3,
+      "image": 3,
+      "title": "Monkey",
+      "detail": "Sample data"
+    },
+    {
+      "id": 4,
+      "image": 4,
+      "title": "Oleg",
+      "detail": "Sample data"
+    }
+  ]
+}

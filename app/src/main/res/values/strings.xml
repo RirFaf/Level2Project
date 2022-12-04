@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Level2Project</string>
+    <string name="title">Title</string>
+    <string name="detail">Detail</string>
+    <string name="done">Done</string>
+    <string name="next_img">Next Image</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+</resources>
