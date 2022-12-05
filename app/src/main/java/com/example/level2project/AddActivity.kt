@@ -1,14 +1,9 @@
 package com.example.level2project
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.level2project.databinding.ActivityAddBinding
-import java.io.File
-import java.io.FileInputStream
 
 class AddActivity : AppCompatActivity() {
     //Companion object - это аналог модификатора static
@@ -38,24 +33,24 @@ class AddActivity : AppCompatActivity() {
         initButtons()
     }
 
-    private fun initButtons() = with(binding){
-        nextBtn.setOnClickListener{
+    private fun initButtons() = with(binding) {
+        nextBtn.setOnClickListener {
             imageId++
             if (imageId > imageList.size - 1) {
                 imageId = 0
             }
             imageView.setImageResource(imageList[imageId])
         }
-        doneBtn.setOnClickListener{
-            val worker = Worker (imageId, editTitle.text.toString(), editDetail.text.toString())
+        doneBtn.setOnClickListener {
+            val worker = WorkerModel(imageId, editTitle.text.toString(), editDetail.text.toString())
             //intent - это намерения. Способ передачи данных между activity
-            val addIntent = Intent().apply{
+            val addIntent = Intent().apply {
                 putExtra("worker", worker)
             }
             setResult(RESULT_OK, addIntent)
             finish()
         }
-        cancelBtn.setOnClickListener{
+        cancelBtn.setOnClickListener {
             finish()
         }
     }

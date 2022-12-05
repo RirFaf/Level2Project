@@ -9,13 +9,15 @@ import com.example.level2project.databinding.CardViewBinding
 //Адаптер служит для того, чтобы отрисовывать элементы Recycler View
 //В самом классе прописывается логика одного элемента (примера),
 // который в дальнейшем заполняется пользовательскими данными
-class WorkerAdapter(val listener: Listener) : RecyclerView.Adapter<WorkerAdapter.ViewHolder>() {
+class WorkerAdapter(val listener: Listener, val workerList: ArrayList<WorkerModel>) :
+    RecyclerView.Adapter<WorkerAdapter.ViewHolder>() {
 
     class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
         val binding = CardViewBinding.bind(item)
+
         //чтобы не прописывать binding перед каждой строкой чожно использовать with(binding)
         //по сути этот оператор указывает класс, из которого нужно брать элементы
-        fun bind(worker: Worker, listener: Listener) = with(binding) {
+        fun bind(worker: WorkerModel, listener: Listener) = with(binding) {
             val imageList = listOf(
                 R.drawable.android,
                 R.drawable.monkey_vah,
@@ -34,7 +36,7 @@ class WorkerAdapter(val listener: Listener) : RecyclerView.Adapter<WorkerAdapter
         }
     }
 
-    private val workerList = ArrayList<Worker>()
+//    private val workerList = ArrayList<WorkerModel>()
 
     //Создание cardView и его передача
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,7 +54,7 @@ class WorkerAdapter(val listener: Listener) : RecyclerView.Adapter<WorkerAdapter
         holder.bind(workerList[position], listener)
     }
 
-    fun addWorker(worker: Worker) {
+    fun addWorkerToScreen(worker: WorkerModel) {
         workerList.add(worker)
         //Уведомление об изменении данных для адаптера
         //Обязательно для всех, чтобы он обновлялся во сремя работы с приложением
@@ -60,6 +62,6 @@ class WorkerAdapter(val listener: Listener) : RecyclerView.Adapter<WorkerAdapter
     }
 
     interface Listener {
-        fun onClick(worker: Worker)
+        fun onClick(worker: WorkerModel)
     }
 }

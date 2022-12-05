@@ -13,7 +13,7 @@ class EditActivity : AppCompatActivity() {
     //т.е. при создании объектов, не содаются копии статических переменных (в отличие от обычных)
     //Статические переменные являются глобальными
     companion object {
-        fun makeIntent(context: Context, item: Worker): Intent =
+        fun makeIntent(context: Context, item: WorkerModel): Intent =
             Intent(context, EditActivity::class.java).putExtra("item", item)
     }
     private lateinit var binding: ActivityEditBinding
@@ -32,7 +32,7 @@ class EditActivity : AppCompatActivity() {
         binding = ActivityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val item = intent.getSerializableExtra("item") as Worker
+        val item = intent.getSerializableExtra("item") as WorkerModel
         binding.apply {
             imageView.setImageResource(imageList[item.imageId])
             titleView.text = item.title

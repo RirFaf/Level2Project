@@ -2,25 +2,25 @@
   "workers": [
     {
       "id": 1,
-      "image": 1,
+      "imageId": 1,
       "title": "Android",
       "detail": "Sample data"
     },
     {
       "id": 2,
-      "image": 3,
+      "imageId": 2,
       "title": "Blue dog",
       "detail": "Sample data"
     },
     {
       "id": 3,
-      "image": 3,
+      "imageId": 3,
       "title": "Monkey",
       "detail": "Sample data"
     },
     {
       "id": 4,
-      "image": 4,
+      "imageId": 4,
       "title": "Oleg",
       "detail": "Sample data"
     }
