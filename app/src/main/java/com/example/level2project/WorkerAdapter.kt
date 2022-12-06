@@ -1,8 +1,10 @@
 package com.example.level2project
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.RecyclerView
 import com.example.level2project.databinding.CardViewBinding
 
@@ -56,6 +58,13 @@ class WorkerAdapter(val listener: Listener, val workerList: ArrayList<WorkerMode
 
     fun addWorkerToScreen(worker: WorkerModel) {
         workerList.add(worker)
+        //Уведомление об изменении данных для адаптера
+        //Обязательно для всех, чтобы он обновлялся во сремя работы с приложением
+        notifyDataSetChanged()
+    }
+
+    fun delWorkerFromScreen(worker: WorkerModel) {
+        workerList.remove(worker)
         //Уведомление об изменении данных для адаптера
         //Обязательно для всех, чтобы он обновлялся во сремя работы с приложением
         notifyDataSetChanged()

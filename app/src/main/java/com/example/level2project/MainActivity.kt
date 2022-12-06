@@ -16,6 +16,7 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
 
     private lateinit var binding: ActivityMainBinding
     private var addLauncher: ActivityResultLauncher<Intent>? = null
+    private var editLauncher: ActivityResultLauncher<Intent>? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +34,13 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
                 registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                     if (it.resultCode == RESULT_OK) {
                         adapter.addWorkerToScreen(it.data?.getSerializableExtra("worker") as WorkerModel)
+                    }
+                }
+
+            editLauncher =
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                    if (it.resultCode == RESULT_OK) {
+                        adapter.delWorkerFromScreen(it.data?.getSerializableExtra("delItem") as WorkerModel)
                     }
                 }
         } catch (e: JSONException) {
@@ -54,7 +62,13 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
 
     //Реализация данной функции происходит в main, т.к. данные хранятся именно здесь
     override fun onClick(worker: WorkerModel) {
-        startActivity(EditActivity.makeIntent(this@MainActivity, worker))
+        editLauncher?.launch(
+            Intent(
+                this@MainActivity,
+                EditActivity::class.java
+            ).apply {
+                putExtra("item", worker)
+            })
     }
 
     //Функция для инициализации JSON файла
