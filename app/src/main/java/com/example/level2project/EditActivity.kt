@@ -15,6 +15,7 @@ class EditActivity : AppCompatActivity() {
         fun makeIntent(context: Context, item: WorkerModel): Intent =
             Intent(context, EditActivity::class.java).putExtra("item", item)
     }
+
     private lateinit var binding: ActivityEditBinding
     private val imageList = listOf(
         R.drawable.android,
@@ -34,19 +35,22 @@ class EditActivity : AppCompatActivity() {
         initButtons(item)
         binding.apply {
             imageView.setImageResource(imageList[item.imageId])
-            titleView.text = item.title
-            detailView.text = item.detail
+            titleEdit.setText(item.title)
+            detailEdit.setText(item.detail)
         }
     }
 
-    private fun initButtons(item: WorkerModel) = with(binding){
-       deleteBtn.setOnClickListener{
-           //intent - это намерения. Способ передачи данных между activity
-           val addIntent = Intent().apply {
-               putExtra("delItem", item)
-           }
-           setResult(RESULT_OK, addIntent)
-           finish()
-       }
+    private fun initButtons(item: WorkerModel) = with(binding) {
+        deleteBtn.setOnClickListener {
+            //intent - это намерения. Способ передачи данных между activity
+            val addIntent = Intent().apply {
+                putExtra("delItem", item)
+            }
+            setResult(RESULT_OK, addIntent)
+            finish()
+        }
+        doneBtn.setOnClickListener {
+            finish()
+        }
     }
 }
