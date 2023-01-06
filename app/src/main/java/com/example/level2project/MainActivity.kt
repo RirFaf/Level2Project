@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -73,6 +75,17 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
             //это класс ИЗ которого мы запускаем, а второй - это класс, который мы запускаем
             addLauncher?.launch(Intent(this@MainActivity, AddActivity::class.java))
         }
+    }
+
+    //Надуваем выпадающее меню
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.sort_menu, menu)
+        return true
+    }
+
+    //Здесь должны будут прописываться действия по нажатию на элементы меню
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return true
     }
 
     //Реализация данной функции происходит в main, т.к. данные хранятся именно здесь
