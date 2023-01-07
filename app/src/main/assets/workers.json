@@ -3,26 +3,26 @@
     {
       "id": 1,
       "imageId": 1,
-      "title": "Android",
-      "detail": "Sample data"
+      "title": "Ivan",
+      "detail": "Lurking in the shadows"
     },
     {
       "id": 2,
       "imageId": 2,
-      "title": "Blue dog",
-      "detail": "Sample data"
+      "title": "Ohotnik",
+      "detail": "Prepares for the hunt"
     },
     {
       "id": 3,
       "imageId": 3,
-      "title": "Monkey",
-      "detail": "Sample data"
+      "title": "Oleg",
+      "detail": "V cirke ne vistupayet"
     },
     {
       "id": 4,
       "imageId": 4,
-      "title": "Oleg",
-      "detail": "Sample data"
+      "title": "[classified]",
+      "detail": "Eats smurfs"
     }
   ]
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.lifecycle.ProcessCameraProvider
 import com.example.level2project.databinding.ActivityEditBinding
 
 class EditActivity : AppCompatActivity() {
@@ -16,6 +15,7 @@ class EditActivity : AppCompatActivity() {
         fun makeIntent(context: Context, item: WorkerModel): Intent =
             Intent(context, EditActivity::class.java).putExtra("item", item)
     }
+
     private lateinit var binding: ActivityEditBinding
     private val imageList = listOf(
         R.drawable.android,
@@ -31,18 +31,26 @@ class EditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         val item = intent.getSerializableExtra("item") as WorkerModel
+        initButtons(item)
         binding.apply {
             imageView.setImageResource(imageList[item.imageId])
-            titleView.text = item.title
-            detailView.text = item.detail
+            titleEdit.setText(item.title)
+            detailEdit.setText(item.detail)
         }
     }
 
-    private fun initButtons() = with(binding){
-       deleteBtn.setOnClickListener{
-
-       }
+    private fun initButtons(item: WorkerModel) = with(binding) {
+        deleteBtn.setOnClickListener {
+            //intent - это намерения. Способ передачи данных между activity
+            val addIntent = Intent().apply {
+                putExtra("delItem", item)
+            }
+            setResult(RESULT_OK, addIntent)
+            finish()
+        }
+        doneBtn.setOnClickListener {
+            finish()
+        }
     }
 }
