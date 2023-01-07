@@ -1,7 +1,6 @@
 package com.example.level2project
 
 import android.Manifest
-import android.app.Notification.MessagingStyle.Message
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -21,14 +20,13 @@ import org.json.JSONException
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
-import java.nio.charset.Charset
-import java.nio.file.Paths
 
 class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
 
     private lateinit var binding: ActivityMainBinding
     private var addLauncher: ActivityResultLauncher<Intent>? = null
     private var editLauncher: ActivityResultLauncher<Intent>? = null
+    private val adapter = getAdapter()
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,34 +34,31 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //Присваивание значений из JSON - файла
-        try {
-            isStoragePermissionGranted()
+        isStoragePermissionGranted()
 //            val bufferedReader: BufferedReader =
 //                File("file:///workers.json").bufferedReader()
 //            val jsonString = bufferedReader.use { it.readText() }
-            val jsonString = getJSONFromAssets()!!
-            val workers = Gson().fromJson(jsonString, Workers::class.java)
-            val adapter = WorkerAdapter(this, workers.workers, this)
-            initRecyclerView(adapter)
-            //Для получения данных из addActivity используем
-            addLauncher =
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    if (it.resultCode == RESULT_OK) {
-                        adapter.addWorkerToScreen(
-                            it.data?.getSerializableExtra("worker") as WorkerModel
-                        )
-                    }
-                }
+//            val jsonString = getJSONFromAssets()!!
+//            val workers = Gson().fromJson(jsonString, Workers::class.java)
+//            val adapter = WorkerAdapter(this, workers.workers, this)
+        initRecyclerView(adapter)
 
-            editLauncher =
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    if (it.resultCode == RESULT_OK) {
-                        adapter.delWorkerFromScreen(it.data?.getSerializableExtra("delItem") as WorkerModel)
-                    }
+        //Для получения данных из addActivity используем
+        addLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == RESULT_OK) {
+                    adapter.addWorkerToScreen(
+                        it.data?.getSerializableExtra("worker") as WorkerModel
+                    )
                 }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
+            }
+
+        editLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == RESULT_OK) {
+                    adapter.delWorkerFromScreen(it.data?.getSerializableExtra("delItem") as WorkerModel)
+                }
+            }
     }
 
     //Инициализация recycler view
@@ -85,6 +80,10 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
 
     //Здесь должны будут прописываться действия по нажатию на элементы меню
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        binding.recyclerView.adapter = WorkerAdapter
+        when (item.itemId) {
+            R.id.by_title->adapter.sortByTitle()
+        }
         return true
     }
 
@@ -101,22 +100,18 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
     }
 
     //Функция для инициализации JSON файла
-    private fun getJSONFromAssets(): String? {
-        var json: String? = null
-        val charset: Charset = Charsets.UTF_8
-        try {
-            val workerJSONFile =
-                assets.open("workers.json")
-            val size = workerJSONFile.available()
-            val buffer = ByteArray(size)
-            workerJSONFile.read(buffer)
-            workerJSONFile.close()
-            json = String(buffer, charset)
+    private fun getAdapter(): WorkerAdapter {
+        val nullWorker = WorkerModel(0, "0", "0")
+        val temp: MutableList<WorkerModel> = MutableList(1){nullWorker}
+        val nullWorkerList= Workers(temp)
+        return try {
+            val bReader: BufferedReader = File("workers.json").bufferedReader()
+            val workers = Gson().fromJson(bReader.readText(), Workers::class.java)
+            WorkerAdapter(this, workers.workers, this)
         } catch (e: IOException) {
             e.printStackTrace()
-            return null
+            WorkerAdapter(this, nullWorkerList.workers, this)
         }
-        return json
     }
 
     private fun isStoragePermissionGranted(): Boolean {
