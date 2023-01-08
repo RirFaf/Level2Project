@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/by_title"
         android:title="@string/by_title" />
@@ -9,5 +10,7 @@
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
+        android:icon="@drawable/delete_vector_asset"
+        app:showAsAction="ifRoom"
         />
 </menu>

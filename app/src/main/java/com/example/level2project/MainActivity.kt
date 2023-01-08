@@ -11,6 +11,7 @@ import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -84,16 +85,24 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
 
     //Здесь должны будут прописываться действия по нажатию на элементы меню
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        binding.recyclerView.adapter = WorkerAdapter
         when (item.itemId) {
             R.id.by_title -> adapter.sortByTitle()
-            R.id.delete -> deleteSelectedItems()
+            R.id.delete -> delete()
         }
         return true
     }
 
-    private fun deleteSelectedItems() {
+    private fun delete() {
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("Delete")
+        alertDialog.setMessage("Are you sure?")
+        alertDialog.setPositiveButton("Yes"){_,_->
+            adapter.deleteSelectedElements()
+            showDeleteItemMenu(false)
 
+        }
+        alertDialog.setNegativeButton("No"){_,_-> }
+        alertDialog.show()
     }
 
     //Реализация данной функции происходит в main, т.к. данные хранятся именно здесь

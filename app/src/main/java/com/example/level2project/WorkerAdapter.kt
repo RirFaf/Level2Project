@@ -66,6 +66,7 @@ class WorkerAdapter(
             imageView.setImageResource(imageList[worker.imageId])
             titleView.text = worker.title
             detailView.text = worker.detail
+            cardView.setBackgroundColor(Color.parseColor("#9E9E9E"))
             cardView.setOnClickListener {
                 if (selectedItemsList.contains(position)) {
                     selectedItemsList.removeAt(position)
@@ -79,10 +80,10 @@ class WorkerAdapter(
                     selectItem(holder, worker, position)
                 } else {
                     listener.onClick(worker)
+                    cardView.setBackgroundColor(Color.parseColor("#9E9E9E"))
                 }
             }
             cardView.setOnLongClickListener {
-                Log.d("LongClick", "TrueBind")
                 selectItem(holder, worker, position)
                 true
             }
@@ -104,6 +105,15 @@ class WorkerAdapter(
 
     fun sortByTitle() {
         workerList.sortBy { it.title }
+        notifyDataSetChanged()
+    }
+
+    fun deleteSelectedElements() {
+        if (selectedItemsList.isNotEmpty()) {
+            workerList.removeAll { worker -> worker.selected }
+            isEnabled = false
+            selectedItemsList.clear()
+        }
         notifyDataSetChanged()
     }
 
