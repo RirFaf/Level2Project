@@ -13,7 +13,7 @@ class AddActivity : AppCompatActivity() {
     companion object {
     }
 
-    lateinit var binding: ActivityAddBinding
+    private lateinit var binding: ActivityAddBinding
     private var imageId = 0
     private val imageList = listOf(
         R.drawable.android,
@@ -42,7 +42,7 @@ class AddActivity : AppCompatActivity() {
             imageView.setImageResource(imageList[imageId])
         }
         doneBtn.setOnClickListener {
-            val worker = WorkerModel(imageId, editTitle.text.toString(), editDetail.text.toString())
+            val worker = WorkerModel(imageId, editTitle.text.toString(), editDetail.text.toString(), false)
             //intent - это намерения. Способ передачи данных между activity
             val addIntent = Intent().apply {
                 putExtra("worker", worker)

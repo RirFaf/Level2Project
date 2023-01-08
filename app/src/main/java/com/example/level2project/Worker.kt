@@ -4,9 +4,11 @@ package com.example.level2project
 //Дата-классы нужны для простого объявления, они могут содержать методы
 //Являются финальными по умолчанию, т.е. не могут иметь потомков
 data class WorkerModel(
-    var imageId: Int,
+    val imageId: Int,
     val title: String,
-    val detail: String
+    val detail: String,
+    var selected: Boolean
+
 ) :
     java.io.Serializable
 

@@ -1,12 +1,11 @@
 package com.example.level2project
 
 import android.content.Context
-import android.os.Build
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.level2project.databinding.CardViewBinding
 
@@ -14,40 +13,28 @@ import com.example.level2project.databinding.CardViewBinding
 //В самом классе прописывается логика одного элемента (примера),
 // который в дальнейшем заполняется пользовательскими данными
 class WorkerAdapter(
-    val listener: Listener,
-    val workerList: MutableList<WorkerModel>,
-    context: Context
-) :
-    RecyclerView.Adapter<WorkerAdapter.ViewHolder>(), java.io.Serializable {
-
+    private val listener: Listener,
+    private val workerList: MutableList<WorkerModel>,
+    private val context: Context,
+    private val showDeleteMenu: (Boolean) -> Unit
+) : RecyclerView.Adapter<WorkerAdapter.ViewHolder>(), java.io.Serializable {
+    private var isEnabled = false
+    private val selectedItemsList = mutableListOf<Int>()
 //    @RequiresApi(Build.VERSION_CODES.N)
 //    private val path = "${context.cacheDir}/workers.json"
 
     class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
         val binding = CardViewBinding.bind(item)
-
-        //чтобы не прописывать binding перед каждой строкой чожно использовать with(binding)
-        //по сути этот оператор указывает класс, из которого нужно брать элементы
-        fun bind(worker: WorkerModel, listener: Listener) = with(binding) {
-            val imageList = listOf(
-                R.drawable.android,
-                R.drawable.monkey_vah,
-                R.drawable.ohota_krepkoe_enjoyer,
-                R.drawable.oleg,
-                R.drawable.blue_dog,
-                R.drawable.pavel,
-                R.drawable.short_dog
-            )
-            imageView.setImageResource(imageList[worker.imageId])
-            titleView.text = worker.title
-            detailView.text = worker.detail
-            cardView.setOnClickListener {
-                listener.onClick(worker)
-            }
-        }
     }
 
-//    private val workerList = ArrayList<WorkerModel>()
+    private fun selectItem(holder: ViewHolder, item: WorkerModel, position: Int) {
+        isEnabled = true
+        selectedItemsList.add(position)
+        item.selected = true
+        holder.binding.cardView.setBackgroundColor(Color.parseColor("#676767"))
+        showDeleteMenu(true)
+        Log.d("LongClick", "TrueFun")
+    }
 
     //Создание cardView и его передача
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -62,10 +49,46 @@ class WorkerAdapter(
 
     //Заполняет cardView данными
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(workerList[position], listener)
+        val worker = workerList[position]
+        val imageList = listOf(
+            R.drawable.android,
+            R.drawable.monkey_vah,
+            R.drawable.ohota_krepkoe_enjoyer,
+            R.drawable.oleg,
+            R.drawable.blue_dog,
+            R.drawable.pavel,
+            R.drawable.short_dog
+        )
+        //чтобы не прописывать binding перед каждой строкой чожно использовать with(binding)
+        //по сути эта конструкция указывает класс, из которого нужно брать элементы
+        //Так же можно использовать следующую конструкцию
+        holder.binding.apply {
+            imageView.setImageResource(imageList[worker.imageId])
+            titleView.text = worker.title
+            detailView.text = worker.detail
+            cardView.setOnClickListener {
+                if (selectedItemsList.contains(position)) {
+                    selectedItemsList.removeAt(position)
+                    cardView.setBackgroundColor(Color.parseColor("#9E9E9E"))
+                    worker.selected = false
+                    if (selectedItemsList.isEmpty()) {
+                        showDeleteMenu(false)
+                        isEnabled = false
+                    }
+                } else if (isEnabled) {
+                    selectItem(holder, worker, position)
+                } else {
+                    listener.onClick(worker)
+                }
+            }
+            cardView.setOnLongClickListener {
+                Log.d("LongClick", "TrueBind")
+                selectItem(holder, worker, position)
+                true
+            }
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     fun addWorkerToScreen(worker: WorkerModel) {
         workerList.add(worker)
 //        addDataToCacheFile(workerList)
