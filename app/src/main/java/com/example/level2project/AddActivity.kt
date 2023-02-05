@@ -2,6 +2,7 @@ package com.example.level2project
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.level2project.databinding.ActivityAddBinding
 
@@ -42,13 +43,29 @@ class AddActivity : AppCompatActivity() {
             imageView.setImageResource(imageList[imageId])
         }
         doneBtn.setOnClickListener {
-            val worker = WorkerModel(imageId, editTitle.text.toString(), editDetail.text.toString(), false)
-            //intent - это намерения. Способ передачи данных между activity
-            val addIntent = Intent().apply {
-                putExtra("worker", worker)
+            if(editName.text.toString().isNotBlank() &&
+                editPatronymic.text.toString().isNotBlank() &&
+                editSurname.text.toString().isNotBlank()&&
+                editPosition.text.toString().isNotBlank()&&
+                editDept.text.toString().isNotBlank()) {
+                val worker = WorkerModel(
+                    imageId,
+                    editName.text.toString().lowercase().replaceFirstChar { it.uppercase() },
+                    editPatronymic.text.toString().lowercase().replaceFirstChar { it.uppercase() },
+                    editSurname.text.toString().lowercase().replaceFirstChar { it.uppercase() },
+                    editPosition.text.toString().lowercase().replaceFirstChar { it.uppercase() },
+                    editDept.text.toString(),
+                    false
+                )
+                //intent - это намерения. Способ передачи данных между activity
+                val addIntent = Intent().apply {
+                    putExtra("worker", worker)
+                }
+                setResult(RESULT_OK, addIntent)
+                finish()
+            } else {
+                Toast.makeText(this@AddActivity,"Заполните все поля", Toast.LENGTH_LONG).show()
             }
-            setResult(RESULT_OK, addIntent)
-            finish()
         }
         cancelBtn.setOnClickListener {
             finish()

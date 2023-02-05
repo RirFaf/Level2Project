@@ -50,6 +50,8 @@ class WorkerAdapter(
     //Заполняет cardView данными
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val worker = workerList[position]
+        val nameBuilder = worker.surname+" "+worker.name[0].uppercase()+". "+worker.patronymic[0].uppercase()+"."
+        val posBuilder = worker.dept+", "+worker.position
         val imageList = listOf(
             R.drawable.android,
             R.drawable.monkey_vah,
@@ -64,8 +66,8 @@ class WorkerAdapter(
         //Так же можно использовать следующую конструкцию
         holder.binding.apply {
             imageView.setImageResource(imageList[worker.imageId])
-            titleView.text = worker.title
-            detailView.text = worker.detail
+            nameTV.text = nameBuilder
+            positionTV.text = posBuilder
             cardView.setBackgroundColor(Color.parseColor("#9E9E9E"))
             cardView.setOnClickListener {
                 if (selectedItemsList.contains(position)) {
@@ -103,8 +105,8 @@ class WorkerAdapter(
         notifyDataSetChanged()
     }
 
-    fun sortByTitle() {
-        workerList.sortBy { it.title }
+    fun sortBySurname() {
+        workerList.sortBy { it.surname}
         notifyDataSetChanged()
     }
 
