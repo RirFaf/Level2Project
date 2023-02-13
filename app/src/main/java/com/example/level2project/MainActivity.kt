@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.level2project.databinding.ActivityMainBinding
 import com.google.gson.Gson
+import java.io.BufferedReader
+import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
 
@@ -73,7 +75,8 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
     //Здесь должны будут прописываться действия по нажатию на элементы меню
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.by_title -> adapter.sortBySurname()
+            R.id.by_surname -> adapter.sortBySurname()
+            R.id.by_dept -> adapter.sortByDept()
             R.id.delete -> delete()
         }
         return true
@@ -108,10 +111,10 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
         val temp: MutableList<WorkerModel> = MutableList(1) { nullWorker }
         val nullWorkerList = Workers(temp)
         return try {
-            val bReader = getJSONFromAssets()
-//            val bReader: BufferedReader = File("workers.json").bufferedReader()
+//            val bReader = getJSONFromAssets()
+            val bReader: BufferedReader = File("workers.json").bufferedReader()
             val workers = Gson().fromJson(bReader, Workers::class.java)
-//            bReader.close()
+            bReader.close()
             WorkerAdapter(this, workers.workers, this) { show -> showDeleteItemMenu(show) }
         } catch (e:Exception) {
             e.printStackTrace()
@@ -119,20 +122,20 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
         }
     }
 
-    private fun getJSONFromAssets(): String? {
-        var json: String? = null
-        val charset: Charset = Charsets.UTF_8
-        try {
-            val workerJSONFile = assets.open("workers.json")
-            val size = workerJSONFile.available()
-            val buffer = ByteArray(size)
-            workerJSONFile.read(buffer)
-            workerJSONFile.close()
-            json = String(buffer, charset)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return null
-        }
-        return json
-    }
+//    private fun getJSONFromAssets(): String? {
+//        var json: String? = null
+//        val charset: Charset = Charsets.UTF_8
+//        try {
+//            val workerJSONFile = assets.open("workers.json")
+//            val size = workerJSONFile.available()
+//            val buffer = ByteArray(size)
+//            workerJSONFile.read(buffer)
+//            workerJSONFile.close()
+//            json = String(buffer, charset)
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//            return null
+//        }
+//        return json
+//    }
 }

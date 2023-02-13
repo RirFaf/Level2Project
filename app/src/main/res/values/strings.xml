@@ -14,6 +14,6 @@
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
     <string name="sort">Sort</string>
-    <string name="by_title">Sort by title</string>
-    <string name="by_detail">Sort by detail</string>
+    <string name="by_surname">Sort by surname</string>
+    <string name="by_department">Sort by department</string>
 </resources>

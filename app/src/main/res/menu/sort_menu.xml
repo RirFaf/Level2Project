@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/by_title"
-        android:title="@string/by_title" />
+        android:id="@+id/by_surname"
+        android:title="@string/by_surname" />
     <item
-        android:id="@+id/by_detail"
-        android:title="@string/by_detail" />
+        android:id="@+id/by_dept"
+        android:title="@string/by_department" />
     <item
         android:id="@+id/delete"
         android:title="@string/delete"

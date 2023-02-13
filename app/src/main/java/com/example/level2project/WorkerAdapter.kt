@@ -110,6 +110,11 @@ class WorkerAdapter(
         notifyDataSetChanged()
     }
 
+    fun sortByDept() {
+        workerList.sortBy { it.dept}
+        notifyDataSetChanged()
+    }
+
     fun deleteSelectedElements() {
         if (selectedItemsList.isNotEmpty()) {
             workerList.removeAll { worker -> worker.selected }
