@@ -1,68 +1,51 @@
 package com.example.level2project
 
-import android.Manifest
-import android.app.Notification.MessagingStyle.Message
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.level2project.databinding.ActivityMainBinding
 import com.google.gson.Gson
-import org.json.JSONException
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
-import java.nio.file.Paths
 
 class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
 
     private lateinit var binding: ActivityMainBinding
     private var addLauncher: ActivityResultLauncher<Intent>? = null
     private var editLauncher: ActivityResultLauncher<Intent>? = null
+    private val adapter = getAdapter()
+    private var sortMenu: Menu? = null
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //Присваивание значений из JSON - файла
-        try {
-            isStoragePermissionGranted()
-//            val bufferedReader: BufferedReader =
-//                File("file:///workers.json").bufferedReader()
-//            val jsonString = bufferedReader.use { it.readText() }
-            val jsonString = getJSONFromAssets()!!
-            val workers = Gson().fromJson(jsonString, Workers::class.java)
-            val adapter = WorkerAdapter(this, workers.workers, this)
-            initRecyclerView(adapter)
-            //Для получения данных из addActivity используем
-            addLauncher =
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    if (it.resultCode == RESULT_OK) {
-                        adapter.addWorkerToScreen(
-                            it.data?.getSerializableExtra("worker") as WorkerModel
-                        )
-                    }
-                }
+        initRecyclerView(adapter)
 
-            editLauncher =
-                registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                    if (it.resultCode == RESULT_OK) {
-                        adapter.delWorkerFromScreen(it.data?.getSerializableExtra("delItem") as WorkerModel)
-                    }
-                }
-        } catch (e: JSONException) {
-            e.printStackTrace()
+        //Для получения данных из addActivity используем
+        addLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                adapter.addWorkerToScreen(
+                    it.data?.getSerializableExtra("worker") as WorkerModel
+                )
+            }
+        }
+
+        editLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                adapter.delWorkerFromScreen(it.data?.getSerializableExtra("delItem") as WorkerModel)
+            }
         }
     }
 
@@ -79,65 +62,80 @@ class MainActivity() : AppCompatActivity(), WorkerAdapter.Listener {
 
     //Надуваем выпадающее меню
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        sortMenu = menu
         menuInflater.inflate(R.menu.sort_menu, menu)
+        showDeleteItemMenu(false)
         return true
+    }
+
+    private fun showDeleteItemMenu(show: Boolean) {
+        sortMenu?.findItem(R.id.delete)?.isVisible = show
     }
 
     //Здесь должны будут прописываться действия по нажатию на элементы меню
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.by_surname -> adapter.sortBySurname()
+            R.id.by_dept -> adapter.sortByDept()
+            R.id.delete -> delete()
+        }
         return true
+    }
+
+    private fun delete() {
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("Delete")
+        alertDialog.setMessage("Are you sure?")
+        alertDialog.setPositiveButton("Yes") { _, _ ->
+            adapter.deleteSelectedElements()
+            showDeleteItemMenu(false)
+
+        }
+        alertDialog.setNegativeButton("No") { _, _ -> }
+        alertDialog.show()
     }
 
     //Реализация данной функции происходит в main, т.к. данные хранятся именно здесь
     override fun onClick(worker: WorkerModel) {
         //EditActivity теперь запускается таким образом, т.к. ему надо обмениваться изменёнными объектами с main
-        editLauncher?.launch(
-            Intent(
-                this@MainActivity,
-                EditActivity::class.java
-            ).apply {
-                putExtra("item", worker)
-            })
+        editLauncher?.launch(Intent(
+            this@MainActivity, EditActivity::class.java
+        ).apply {
+            putExtra("item", worker)
+        })
     }
 
     //Функция для инициализации JSON файла
-    private fun getJSONFromAssets(): String? {
-        var json: String? = null
-        val charset: Charset = Charsets.UTF_8
-        try {
-            val workerJSONFile =
-                assets.open("workers.json")
-            val size = workerJSONFile.available()
-            val buffer = ByteArray(size)
-            workerJSONFile.read(buffer)
-            workerJSONFile.close()
-            json = String(buffer, charset)
-        } catch (e: IOException) {
+    private fun getAdapter(): WorkerAdapter {
+        val nullWorker = WorkerModel(0, "Error", "Error","Error","Error","Error", false)
+        val temp: MutableList<WorkerModel> = MutableList(1) { nullWorker }
+        val nullWorkerList = Workers(temp)
+        return try {
+//            val bReader = getJSONFromAssets()
+            val bReader: BufferedReader = File("workers.json").bufferedReader()
+            val workers = Gson().fromJson(bReader, Workers::class.java)
+            bReader.close()
+            WorkerAdapter(this, workers.workers, this) { show -> showDeleteItemMenu(show) }
+        } catch (e:Exception) {
             e.printStackTrace()
-            return null
+            WorkerAdapter(this, nullWorkerList.workers, this) { show -> showDeleteItemMenu(show) }
         }
-        return json
     }
 
-    private fun isStoragePermissionGranted(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                Log.e("TAG", "Permission is granted")
-                true
-            } else {
-                Log.e("TAG", "Permission is revoked")
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    1
-                )
-                false
-            }
-        } else { //permission is automatically granted on sdk<23 upon installation
-            Log.e("TAG", "Permission is granted")
-            true
-        }
-    }
+//    private fun getJSONFromAssets(): String? {
+//        var json: String? = null
+//        val charset: Charset = Charsets.UTF_8
+//        try {
+//            val workerJSONFile = assets.open("workers.json")
+//            val size = workerJSONFile.available()
+//            val buffer = ByteArray(size)
+//            workerJSONFile.read(buffer)
+//            workerJSONFile.close()
+//            json = String(buffer, charset)
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//            return null
+//        }
+//        return json
+//    }
 }

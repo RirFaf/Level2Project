@@ -33,10 +33,12 @@ class EditActivity : AppCompatActivity() {
         setContentView(binding.root)
         val item = intent.getSerializableExtra("item") as WorkerModel
         initButtons(item)
+        val nameBuilder = item.surname+" "+item.name[0].uppercase()+". "+item.patronymic[0].uppercase()+"."
+        val posBuilder = item.dept+", "+item.position
         binding.apply {
             imageView.setImageResource(imageList[item.imageId])
-            titleEdit.setText(item.title)
-            detailEdit.setText(item.detail)
+            nameEV.setText(nameBuilder)
+            positionEV.setText(posBuilder)
         }
     }
 

@@ -2,27 +2,43 @@
   "workers": [
     {
       "id": 1,
-      "imageId": 1,
-      "title": "Ivan",
-      "detail": "Lurking in the shadows"
+      "imageId": 2,
+      "name": "Pyos",
+      "patronymic": "Suslovich",
+      "surname":  "Pivov",
+      "position": "Ohotnik",
+      "dept": "Pivovarnya",
+      "selected": false
     },
     {
       "id": 2,
       "imageId": 2,
-      "title": "Ohotnik",
-      "detail": "Prepares for the hunt"
+      "name": "Pyos",
+      "patronymic": "Suslovich",
+      "surname":  "Pivov",
+      "position": "Ohotnik",
+      "dept": "Pivovarnya",
+      "selected": false
     },
     {
       "id": 3,
-      "imageId": 3,
-      "title": "Oleg",
-      "detail": "V cirke ne vistupayet"
+      "imageId": 2,
+      "name": "Pyos",
+      "patronymic": "Suslovich",
+      "surname":  "Pivov",
+      "position": "Ohotnik",
+      "dept": "Pivovarnya",
+      "selected": false
     },
     {
       "id": 4,
-      "imageId": 4,
-      "title": "[classified]",
-      "detail": "Eats smurfs"
+      "imageId": 2,
+      "name": "Pyos",
+      "patronymic": "Suslovich",
+      "surname":  "Pivov",
+      "position": "Ohotnik",
+      "dept": "Pivovarnya",
+      "selected": false
     }
   ]
 }
